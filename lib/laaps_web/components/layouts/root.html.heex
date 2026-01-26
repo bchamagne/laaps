@@ -22,15 +22,52 @@
           }
         };
         if (!document.documentElement.hasAttribute("data-theme")) {
-          setTheme(localStorage.getItem("phx:theme") || "system");
+          setTheme(localStorage.getItem("phx:theme") || "dark");
         }
         window.addEventListener("storage", (e) => e.key === "phx:theme" && setTheme(e.newValue || "system"));
-        
+
         window.addEventListener("phx:set-theme", (e) => setTheme(e.target.dataset.phxTheme));
       })();
     </script>
   </head>
   <body>
-    {@inner_content}
+    <Layouts.flash_group flash={@flash} />
+
+    <header class="bg-white dark:bg-gray-800 shadow">
+      <div class="max-w-4xl mx-auto px-4 py-6">
+        <div class="flex">
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Laaps Jeux</h1>
+          <div class="grow"></div>
+
+          <Layouts.theme_toggle />
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+      {@inner_content}
+    </main>
+
+    <footer class="dock">
+      <button class="dock-active">
+        <Layouts.icon_home />
+        <span class="dock-label">Accueil</span>
+      </button>
+
+      <button>
+        <Layouts.icon_game />
+        <span class="dock-label">Soirées</span>
+      </button>
+
+      <button>
+        <Layouts.icon_chat />
+        <span class="dock-label">Chat</span>
+      </button>
+
+      <button>
+        <Layouts.icon_settings />
+        <span class="dock-label">Paramètres</span>
+      </button>
+    </footer>
   </body>
 </html>
