@@ -17,7 +17,7 @@ defmodule LaapsWeb.Router do
   scope "/", LaapsWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", HomeLive, :index
     live "/game", GameLive, :index
     live "/chat", ChatLive, :index
     live "/settings", SettingsLive, :index
