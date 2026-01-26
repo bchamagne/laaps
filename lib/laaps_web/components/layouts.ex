@@ -163,6 +163,7 @@ defmodule LaapsWeb.Layouts do
   end
 
   attr :date, DateTime, required: false
+  attr :format, :string, required: false
 
   def date(assigns) do
     format =
@@ -172,8 +173,10 @@ defmodule LaapsWeb.Layouts do
         "%d/%m à %H:%M"
       end
 
+    assigns = assign(assigns, format: format)
+
     ~H"""
-    {Calendar.strftime(@date, format)}
+    {Calendar.strftime(@date, @format)}
     """
   end
 
