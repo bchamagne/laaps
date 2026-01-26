@@ -76,14 +76,15 @@ defmodule LaapsWeb.GameLive do
                 <h3 class="text-lg font-bold mb-4">
                   <% event = Enum.find(@events, &(&1.id == @selected_event_id)) %>
                   <%= if event do %>
-                    Inscription : {event.label} du <Layouts.date date={event.date} />
+                    S'inscrire à {event.label} du {Calendar.strftime(event.date, "%d/%m à %H:%M")}
                   <% else %>
-                    Inscription : ???
+                    S'inscrire à la soirée
                   <% end %>
                 </h3>
                 <.form
                   for={@participant_form}
                   id="participant-form"
+                  phx-hook="LocalStorageForm"
                   phx-change="validate_participant"
                   phx-submit="submit_participant"
                 >
@@ -102,6 +103,51 @@ defmodule LaapsWeb.GameLive do
                     <button type="submit" class="btn btn-primary">Valider</button>
                   </div>
                 </.form>
+                <script :type={Phoenix.LiveView.ColocatedHook} name=".LocalStorageForm">
+                  export default {
+                    mounted() {
+                      // Load saved form data from localStorage
+                      const savedData = localStorage.getItem('laaps_participant_form')
+                      if (savedData) {
+                        try {
+                          const data = JSON.parse(savedData)
+                          // Set form values
+                          const firstnameInput = this.el.querySelector('[name="participant[firstname]"]')
+                          const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
+                          const countInput = this.el.querySelector('[name="participant[count]"]')
+                          
+                          if (firstnameInput && data.firstname) firstnameInput.value = data.firstname
+                          if (lastnameInput && data.lastname) lastnameInput.value = data.lastname
+                          if (countInput && data.count) countInput.value = data.count
+                          
+                          // Trigger change event to update LiveView state
+                          if (firstnameInput && data.firstname) firstnameInput.dispatchEvent(new Event('input', { bubbles: true }))
+                          if (lastnameInput && data.lastname) lastnameInput.dispatchEvent(new Event('input', { bubbles: true }))
+                          if (countInput && data.count) countInput.dispatchEvent(new Event('input', { bubbles: true }))
+                        } catch (e) {
+                          console.error('Failed to parse saved form data:', e)
+                        }
+                      }
+                    },
+                    
+                    // Save form data on submit
+                    beforeDestroy() {
+                      const firstnameInput = this.el.querySelector('[name="participant[firstname]"]')
+                      const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
+                      const countInput = this.el.querySelector('[name="participant[count]"]')
+                      
+                      if (firstnameInput && lastnameInput && countInput) {
+                        const formData = {
+                          firstname: firstnameInput.value || '',
+                          lastname: lastnameInput.value || '',
+                          count: countInput.value || '1'
+                        }
+                        
+                        localStorage.setItem('laaps_participant_form', JSON.stringify(formData))
+                      }
+                    }
+                  }
+                </script>
               </div>
             </div>
           </div>
