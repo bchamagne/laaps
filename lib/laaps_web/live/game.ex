@@ -38,6 +38,9 @@ defmodule LaapsWeb.GameLive do
         <span class="loading loading-ball loading-xl"></span>
       <% else %>
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <%= if @events == [] do %>
+            <p>Il n'y a aucun événement de prévu !</p>
+          <% end %>
           <%= for e <- @events do %>
             <% total = Laaps.Game.participants(e) %>
             <div class="mb-4">
