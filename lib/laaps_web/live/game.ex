@@ -22,8 +22,8 @@ defmodule LaapsWeb.GameLive do
       message: "Le nom doit contenir entre 1 et 100 caractères"
     )
     |> validate_number(:count,
-      greater_than: 0,
-      message: "Le nombre de personnes doit être supérieur à 0"
+      greater_than_or_equal_to: 0,
+      message: "Le nombre de personnes doit être positif ou 0"
     )
     |> validate_number(:count,
       less_than_or_equal_to: 10,
@@ -35,7 +35,7 @@ defmodule LaapsWeb.GameLive do
     ~H"""
     <Layouts.app flash={@flash} request_path={@request_path}>
       <%= if @loading do %>
-        <span class="loading loading-ball loading-xl"></span>
+        <div class="text-center"><span class="loading loading-ball loading-xl"></span></div>
       <% else %>
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <%= if @events == [] do %>
@@ -54,7 +54,7 @@ defmodule LaapsWeb.GameLive do
                   phx-value-event_id={e.id}
                   aria-label="S'inscrire à cet événement"
                 >
-                  S'inscrire
+                  Inscription
                 </button>
               </div>
 
@@ -139,9 +139,9 @@ defmodule LaapsWeb.GameLive do
                   <.input
                     field={@participant_form[:count]}
                     type="number"
-                    label="Nombre de personnes"
+                    label="Nombre de personnes (0 pour se désinscrire)"
                     placeholder="1"
-                    min="1"
+                    min="0"
                     max="10"
                     class="input input-bordered w-full"
                     required
@@ -161,7 +161,7 @@ defmodule LaapsWeb.GameLive do
                       phx-disable-with="En cours..."
                       aria-label="Valider l'inscription"
                     >
-                      Valider
+                      S'inscrire
                     </button>
                   </div>
                 </.form>
