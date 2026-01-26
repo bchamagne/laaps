@@ -54,7 +54,6 @@ defmodule LaapsWeb.Layouts do
     <footer class="dock">
       <Layouts.dock_button label="Accueil" path="/" icon="home" request_path={@request_path} />
       <Layouts.dock_button label="Soirées" path="/game" icon="game" request_path={@request_path} />
-      <Layouts.dock_button label="Chat" path="/chat" icon="chat" request_path={@request_path} />
       <Layouts.dock_button
         label="Paramètres"
         path="/settings"

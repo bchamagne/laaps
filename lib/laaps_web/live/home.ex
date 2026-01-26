@@ -4,7 +4,12 @@ defmodule LaapsWeb.HomeLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} request_path={@request_path}>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4">
+        <h2 class="text-xl font-bold pb-2">News</h2>
+        <p>Il n'y a pas de news</p>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4">
+        <h2 class="text-xl font-bold pb-2">Qui sommes-nous ?</h2>
         <p class="my-2">
           Bienvenue ! Chaque mois (hors vacances scolaires), nous nous retrouvons à la salle du Laaps'Art à Montardon pour partager des moments conviviaux autour de nos jeux préférés. Que vous soyez amateur de stratégie, fan de jeux d'ambiance ou simplement curieux de découvrir de nouveaux univers ludiques, vous êtes les bienvenus !
         </p>

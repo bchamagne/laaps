@@ -19,7 +19,6 @@ defmodule LaapsWeb.Router do
 
     live "/", HomeLive, :index
     live "/game", GameLive, :index
-    live "/chat", ChatLive, :index
     live "/settings", SettingsLive, :index
   end
 

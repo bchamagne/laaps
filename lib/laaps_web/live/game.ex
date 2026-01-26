@@ -58,7 +58,7 @@ defmodule LaapsWeb.GameLive do
                 </button>
               </div>
 
-              <p>
+              <p class="my-4">
                 <%= cond do %>
                   <% total == 0 -> %>
                     Il n'y a pas encore de participants inscrits.
@@ -74,12 +74,6 @@ defmodule LaapsWeb.GameLive do
                   <% {name, count} = Laaps.Game.Event.decode_participant(p) %>
 
                   <li class="list-row">
-                    <div>
-                      <img
-                        class="size-10 rounded-box"
-                        src="https://img.daisyui.com/images/profile/demo/1@94.webp"
-                      />
-                    </div>
                     <div>
                       <div>{name}</div>
                       <div class="text-xs uppercase font-semibold opacity-60">

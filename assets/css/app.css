@@ -109,7 +109,7 @@
 
 @layer components {
     a {
-        @apply text-black dark:text-white font-bold;
+        @apply text-primary font-bold;
     }
     a:hover {
         @apply text-red-800 dark:text-yellow-200;
