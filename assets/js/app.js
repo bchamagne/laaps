@@ -27,27 +27,30 @@ import topbar from "../vendor/topbar"
 
 const LocalStorageForm = {
   mounted() {
-    // Load saved form data from localStorage
-    const savedData = localStorage.getItem('laaps_participant_form')
-    if (savedData) {
-      try {
-        const data = JSON.parse(savedData)
-        // Set form values
-        const firstnameInput = this.el.querySelector('[name="participant[firstname]"]')
-        const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
-        const countInput = this.el.querySelector('[name="participant[count]"]')
-        
-        if (firstnameInput && data.firstname) firstnameInput.value = data.firstname
-        if (lastnameInput && data.lastname) lastnameInput.value = data.lastname
-        if (countInput && data.count) countInput.value = data.count
-        
-        // Trigger change event to update LiveView state
-        if (firstnameInput && data.firstname) firstnameInput.dispatchEvent(new Event('input', { bubbles: true }))
-        if (lastnameInput && data.lastname) lastnameInput.dispatchEvent(new Event('input', { bubbles: true }))
-        if (countInput && data.count) countInput.dispatchEvent(new Event('input', { bubbles: true }))
-      } catch (e) {
-        console.error('Failed to parse saved form data:', e)
-      }
+    // Load saved form data from localStorage using separate keys
+    const firstnameInput = this.el.querySelector('[name="participant[firstname]"]')
+    const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
+    const countInput = this.el.querySelector('[name="participant[count]"]')
+    
+    // Load and set firstname
+    const savedFirstname = localStorage.getItem('laaps_firstname')
+    if (firstnameInput && savedFirstname) {
+      firstnameInput.value = savedFirstname
+      firstnameInput.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+    
+    // Load and set lastname
+    const savedLastname = localStorage.getItem('laaps_lastname')
+    if (lastnameInput && savedLastname) {
+      lastnameInput.value = savedLastname
+      lastnameInput.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+    
+    // Load and set count
+    const savedCount = localStorage.getItem('laaps_count')
+    if (countInput && savedCount) {
+      countInput.value = savedCount
+      countInput.dispatchEvent(new Event('input', { bubbles: true }))
     }
     
     // Add event listeners to save on input changes
@@ -68,14 +71,17 @@ const LocalStorageForm = {
     const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
     const countInput = this.el.querySelector('[name="participant[count]"]')
     
-    if (firstnameInput && lastnameInput && countInput) {
-      const formData = {
-        firstname: firstnameInput.value || '',
-        lastname: lastnameInput.value || '',
-        count: countInput.value || '1'
-      }
-      
-      localStorage.setItem('laaps_participant_form', JSON.stringify(formData))
+    // Save each field to separate localStorage keys
+    if (firstnameInput) {
+      localStorage.setItem('laaps_firstname', firstnameInput.value || '')
+    }
+    
+    if (lastnameInput) {
+      localStorage.setItem('laaps_lastname', lastnameInput.value || '')
+    }
+    
+    if (countInput) {
+      localStorage.setItem('laaps_count', countInput.value || '1')
     }
   }
 }
