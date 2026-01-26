@@ -49,11 +49,15 @@ const LocalStorageForm = {
       lastnameInput.dispatchEvent(new Event('input', { bubbles: true }))
     }
     
-    // Load and set count
+    // Load and set count - default to 1 if not in localStorage
     const savedCount = localStorage.getItem('laaps_count')
     console.log('Loaded count from localStorage:', savedCount)
-    if (countInput && savedCount) {
-      countInput.value = savedCount
+    if (countInput) {
+      if (savedCount && savedCount !== '') {
+        countInput.value = savedCount
+      } else {
+        countInput.value = '1'
+      }
       countInput.dispatchEvent(new Event('input', { bubbles: true }))
     }
     

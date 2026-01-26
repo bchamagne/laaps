@@ -6,7 +6,7 @@ defmodule LaapsWeb.GameLive do
   def participant_changeset(attrs \\ %{}) do
     types = %{firstname: :string, lastname: :string, count: :integer}
 
-    {%{}, types}
+    {%{count: 1}, types}
     |> cast(attrs, Map.keys(types))
     |> validate_required([:firstname, :lastname, :count],
       message: "Ce champ est obligatoire"
