@@ -18,7 +18,9 @@ defmodule LaapsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    get "/game", PageController, :game
+    live "/game", GameLive, :index
+    live "/chat", ChatLive, :index
+    live "/settings", SettingsLive, :index
   end
 
   # Other scopes may use custom stacks.

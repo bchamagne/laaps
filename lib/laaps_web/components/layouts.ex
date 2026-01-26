@@ -26,6 +26,7 @@ defmodule LaapsWeb.Layouts do
 
   """
   attr :flash, :map, required: true, doc: "the map of flash messages"
+  attr :request_path, :string, required: true, doc: "used for the dock"
 
   attr :current_scope, :map,
     default: nil,
@@ -35,38 +36,32 @@ defmodule LaapsWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
-      <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
-        </a>
-      </div>
-      <div class="flex-none">
-        <ul class="flex flex-column px-1 space-x-4 items-center">
-          <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
-          </li>
-          <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
-          </li>
-          <li>
-            <.theme_toggle />
-          </li>
-          <li>
-            <a href="https://hexdocs.pm/phoenix/overview.html" class="btn btn-primary">
-              Get Started <span aria-hidden="true">&rarr;</span>
-            </a>
-          </li>
-        </ul>
+    <header class="bg-white dark:bg-gray-800 shadow">
+      <div class="max-w-4xl mx-auto px-4 py-6">
+        <div class="flex">
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Laaps Jeux</h1>
+          <div class="grow"></div>
+
+          <Layouts.theme_toggle />
+        </div>
       </div>
     </header>
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
-      </div>
+    <main class="max-w-4xl mx-auto px-4 py-8">
+      {render_slot(@inner_block)}
     </main>
+
+    <footer class="dock">
+      <Layouts.dock_button label="Accueil" path="/" icon="home" request_path={@request_path} />
+      <Layouts.dock_button label="Soirées" path="/game" icon="game" request_path={@request_path} />
+      <Layouts.dock_button label="Chat" path="/chat" icon="chat" request_path={@request_path} />
+      <Layouts.dock_button
+        label="Paramètres"
+        path="/settings"
+        icon="settings"
+        request_path={@request_path}
+      />
+    </footer>
 
     <.flash_group flash={@flash} />
     """
@@ -144,7 +139,7 @@ defmodule LaapsWeb.Layouts do
 
   def dock_button(assigns) do
     active_class =
-      if assigns.req_path == assigns.path do
+      if assigns.request_path == assigns.path do
         "dock-active"
       else
         ""

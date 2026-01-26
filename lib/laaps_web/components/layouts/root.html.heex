@@ -31,28 +31,6 @@
     </script>
   </head>
   <body>
-    <Layouts.flash_group flash={@flash} />
-
-    <header class="bg-white dark:bg-gray-800 shadow">
-      <div class="max-w-4xl mx-auto px-4 py-6">
-        <div class="flex">
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Laaps Jeux</h1>
-          <div class="grow"></div>
-
-          <Layouts.theme_toggle />
-        </div>
-      </div>
-    </header>
-
-    <main class="max-w-4xl mx-auto px-4 py-8">
-      {@inner_content}
-    </main>
-
-    <footer class="dock">
-      <Layouts.dock_button label="Accueil" path="/" icon="home" req_path={@conn.request_path} />
-      <Layouts.dock_button label="Soirées" path="/game" icon="game" req_path={@conn.request_path} />
-      <Layouts.dock_button label="Chat" path="/chat" icon="chat" req_path={@conn.request_path} />
-      <Layouts.dock_button label="Paramètres" path="/settings" icon="settings" req_path={@conn.request_path} />
-    </footer>
+    {@inner_content}
   </body>
 </html>
