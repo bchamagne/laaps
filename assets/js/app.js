@@ -86,11 +86,71 @@ const LocalStorageForm = {
   }
 }
 
+const SettingsLocalStorage = {
+  mounted() {
+    // Load saved form data from localStorage using separate keys
+    const firstnameInput = this.el.querySelector('[name="settings[firstname]"]')
+    const lastnameInput = this.el.querySelector('[name="settings[lastname]"]')
+    const countInput = this.el.querySelector('[name="settings[count]"]')
+    
+    // Load and set firstname
+    const savedFirstname = localStorage.getItem('laaps_firstname')
+    if (firstnameInput && savedFirstname) {
+      firstnameInput.value = savedFirstname
+      firstnameInput.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+    
+    // Load and set lastname
+    const savedLastname = localStorage.getItem('laaps_lastname')
+    if (lastnameInput && savedLastname) {
+      lastnameInput.value = savedLastname
+      lastnameInput.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+    
+    // Load and set count
+    const savedCount = localStorage.getItem('laaps_count')
+    if (countInput && savedCount) {
+      countInput.value = savedCount
+      countInput.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+    
+    // Add event listener to save on form submit
+    this.saveSettings = this.saveSettings.bind(this)
+    this.el.addEventListener('submit', this.saveSettings)
+  },
+  
+  destroyed() {
+    // Remove event listener
+    this.el.removeEventListener('submit', this.saveSettings)
+  },
+  
+  saveSettings(e) {
+    // Prevent default form submission since we're using LiveView
+    // LiveView will handle the phx-submit, we just save to localStorage
+    const firstnameInput = this.el.querySelector('[name="settings[firstname]"]')
+    const lastnameInput = this.el.querySelector('[name="settings[lastname]"]')
+    const countInput = this.el.querySelector('[name="settings[count]"]')
+    
+    // Save each field to separate localStorage keys
+    if (firstnameInput) {
+      localStorage.setItem('laaps_firstname', firstnameInput.value || '')
+    }
+    
+    if (lastnameInput) {
+      localStorage.setItem('laaps_lastname', lastnameInput.value || '')
+    }
+    
+    if (countInput) {
+      localStorage.setItem('laaps_count', countInput.value || '1')
+    }
+  }
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {LocalStorageForm, ...colocatedHooks},
+  hooks: {LocalStorageForm, SettingsLocalStorage, ...colocatedHooks},
 })
 
 // Show progress bar on live navigation and form submits
