@@ -18,4 +18,11 @@ defmodule Laaps.Game do
     |> Enum.map(&elem(&1, 1))
     |> Enum.sum()
   end
+
+  def add_participant(e, name, count) do
+    e
+    |> Event.changeset(%{})
+    |> Event.add_participant(name, count)
+    |> Repo.update()
+  end
 end

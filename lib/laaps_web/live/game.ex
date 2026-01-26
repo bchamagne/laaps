@@ -1,47 +1,23 @@
 defmodule LaapsWeb.GameLive do
   use LaapsWeb, :live_view
 
+  import Ecto.Changeset
+
+  def participant_changeset(attrs \\ %{}) do
+    types = %{firstname: :string, lastname: :string, count: :integer}
+
+    {%{}, types}
+    |> cast(attrs, Map.keys(types))
+    |> validate_required([:firstname, :lastname, :count])
+    |> validate_number(:count, greater_than: 0)
+  end
+
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} request_path={@request_path}>
       <%= if @loading do %>
         <span class="loading loading-ball loading-xl"></span>
       <% else %>
-        <dialog id="my_modal_1" class="modal">
-          <div class="modal-box">
-            <h3 class="text-lg font-bold">Inscription</h3>
-
-            <div class="my-2">
-              <label class="input w-full">
-                <span class="label">Nom</span>
-                <input type="text" name="lastname" />
-              </label>
-            </div>
-
-            <div class="my-2">
-              <label class="input w-full">
-                <span class="label">Prénom</span>
-                <input type="text" name="firstname" />
-              </label>
-            </div>
-
-            <div class="my-2">
-              <label class="input w-full">
-                <span class="label">À combien ?</span>
-                <input type="number" value="1" />
-              </label>
-            </div>
-
-            <div class="modal-action">
-              <form method="dialog">
-                <!-- if there is a button in form, it will close the modal -->
-                <button class="btn btn-primary">Valider</button>
-                <button class="btn">Annuler</button>
-              </form>
-            </div>
-          </div>
-        </dialog>
-
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <%= for e <- @events do %>
             <% total = Laaps.Game.participants(e) %>
@@ -50,7 +26,13 @@ defmodule LaapsWeb.GameLive do
                 <h2 class="font-bold text-xl"><Layouts.date date={e.date} /> {e.label}</h2>
                 <div class="grow"></div>
 
-                <button class="btn btn-primary" onclick="my_modal_1.showModal()">S'inscrire</button>
+                <button
+                  class="btn btn-primary"
+                  phx-click="open_modal"
+                  phx-value-event_id={e.id}
+                >
+                  S'inscrire
+                </button>
               </div>
 
               <p>
@@ -85,6 +67,45 @@ defmodule LaapsWeb.GameLive do
             </div>
           <% end %>
         </div>
+
+        <%= if @show_modal and @selected_event_id do %>
+          <div class="fixed inset-0 z-50">
+            <div class="absolute inset-0 bg-black/50" phx-click="close_modal"></div>
+            <div class="relative flex items-center justify-center h-full pointer-events-none">
+              <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4 pointer-events-auto">
+                <h3 class="text-lg font-bold mb-4">
+                  <% event = Enum.find(@events, &(&1.id == @selected_event_id)) %>
+                  <%= if event do %>
+                    Inscription : {event.label} du <Layouts.date date={event.date} />
+                  <% else %>
+                    Inscription : ???
+                  <% end %>
+                </h3>
+                <.form
+                  for={@participant_form}
+                  id="participant-form"
+                  phx-change="validate_participant"
+                  phx-submit="submit_participant"
+                >
+                  <.input field={@participant_form[:firstname]} type="text" label="Prénom" />
+                  <.input field={@participant_form[:lastname]} type="text" label="Nom" />
+                  <.input
+                    field={@participant_form[:count]}
+                    type="number"
+                    label="Nombre de personnes"
+                    min="1"
+                  />
+                  <div class="flex justify-end space-x-2 mt-6">
+                    <button type="button" class="btn btn-ghost" phx-click="close_modal">
+                      Annuler
+                    </button>
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                  </div>
+                </.form>
+              </div>
+            </div>
+          </div>
+        <% end %>
       <% end %>
     </Layouts.app>
     """
@@ -93,9 +114,81 @@ defmodule LaapsWeb.GameLive do
   def mount(_params, _session, socket) do
     if connected?(socket) do
       events = Laaps.Game.future_events()
-      {:ok, assign(socket, events: events, loading: false)}
+
+      {:ok,
+       assign(socket,
+         events: events,
+         loading: false,
+         show_modal: false,
+         selected_event_id: nil,
+         participant_form: to_form(participant_changeset(), as: :participant)
+       )}
     else
-      {:ok, assign(socket, events: [], loading: true)}
+      {:ok,
+       assign(socket,
+         events: [],
+         loading: true,
+         show_modal: false,
+         selected_event_id: nil,
+         participant_form: to_form(participant_changeset(), as: :participant)
+       )}
+    end
+  end
+
+  def handle_event("open_modal", %{"event_id" => event_id}, socket) do
+    {:noreply,
+     assign(socket,
+       show_modal: true,
+       selected_event_id: String.to_integer(event_id),
+       participant_form: to_form(participant_changeset(), as: :participant)
+     )}
+  end
+
+  def handle_event("close_modal", _params, socket) do
+    {:noreply,
+     assign(socket,
+       show_modal: false,
+       selected_event_id: nil,
+       participant_form: to_form(participant_changeset(), as: :participant)
+     )}
+  end
+
+  def handle_event("validate_participant", %{"participant" => params}, socket) do
+    changeset = participant_changeset(params)
+    {:noreply, assign(socket, participant_form: to_form(changeset, as: :participant))}
+  end
+
+  def handle_event("submit_participant", %{"participant" => params}, socket) do
+    changeset = participant_changeset(params)
+
+    if changeset.valid? do
+      event = Enum.find(socket.assigns.events, &(&1.id == socket.assigns.selected_event_id))
+
+      if event do
+        firstname = get_field(changeset, :firstname)
+        lastname = get_field(changeset, :lastname)
+        count = get_field(changeset, :count)
+        name = "#{firstname} #{lastname}"
+        Laaps.Game.add_participant(event, name, count)
+        events = Laaps.Game.future_events()
+
+        {:noreply,
+         assign(socket,
+           events: events,
+           show_modal: false,
+           selected_event_id: nil,
+           participant_form: to_form(participant_changeset(), as: :participant)
+         )}
+      else
+        {:noreply,
+         assign(socket,
+           show_modal: false,
+           selected_event_id: nil,
+           participant_form: to_form(participant_changeset(), as: :participant)
+         )}
+      end
+    else
+      {:noreply, assign(socket, participant_form: to_form(changeset, as: :participant))}
     end
   end
 

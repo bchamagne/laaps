@@ -167,7 +167,7 @@ defmodule LaapsWeb.Layouts do
 
   def date(assigns) do
     ~H"""
-    {Calendar.strftime(@date, "Le %d/%m à %H:%M")}
+    {Calendar.strftime(@date, "%d/%m à %H:%M")}
     """
   end
 
