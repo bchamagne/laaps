@@ -5,7 +5,7 @@ defmodule Laaps.Game.Event do
   @separator "->"
 
   schema "events" do
-    field :date, :utc_datetime
+    field :date, :naive_datetime
     field :label, :string
     field :participants, {:array, :string}, default: []
 

@@ -106,7 +106,8 @@ defmodule LaapsWeb.GameLive do
                 <h3 id="modal-title" class="text-lg font-bold mb-4">
                   <% event = Enum.find(@events, &(&1.id == @selected_event_id)) %>
                   <%= if event do %>
-                    S'inscrire à {event.label} du {Calendar.strftime(event.date, "%d/%m à %H:%M")}
+                    S'inscrire à {event.label} du
+                    <Layouts.date date={event.date} format="%d/%m à %H:%M" />
                   <% else %>
                     S'inscrire à la soirée
                   <% end %>
@@ -161,7 +162,7 @@ defmodule LaapsWeb.GameLive do
                       phx-disable-with="En cours..."
                       aria-label="Valider l'inscription"
                     >
-                      S'inscrire
+                      Valider
                     </button>
                   </div>
                 </.form>
@@ -180,6 +181,7 @@ defmodule LaapsWeb.GameLive do
 
       {:ok,
        assign(socket,
+         page_title: "Soirées - Soirée Jeux Montardon",
          events: events,
          loading: false,
          show_modal: false,
@@ -189,6 +191,7 @@ defmodule LaapsWeb.GameLive do
     else
       {:ok,
        assign(socket,
+         page_title: "Soirées - Soirée Jeux Montardon",
          events: [],
          loading: true,
          show_modal: false,

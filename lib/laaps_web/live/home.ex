@@ -4,23 +4,48 @@ defmodule LaapsWeb.HomeLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} request_path={@request_path}>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4">
-        <h2 class="text-xl font-bold pb-2">News</h2>
-        <p>Il n'y a pas de news</p>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4 max-h-40 overflow-scroll">
+        <h2 class="text-xl font-bold mb-2">News</h2>
+        <%= if @loading do %>
+          <div class="text-center"><span class="loading loading-ball loading-xl"></span></div>
+        <% else %>
+          <%= if @news == [] do %>
+            <p>Il n'y a pas de news</p>
+          <% else %>
+            <%= for n <- @news do %>
+              <div class="my-4">
+                <h3 class="text-l font-bold">
+                  [<Layouts.date date={n.inserted_at} format="%d/%m" />] {n.title}
+                </h3>
+                <p class="whitespace-pre-wrap">{n.content}</p>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
       </div>
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4">
         <h2 class="text-xl font-bold pb-2">Qui sommes-nous ?</h2>
         <p class="my-2">
-          Bienvenue ! Chaque mois (hors vacances scolaires), nous nous retrouvons à la salle du Laaps'Art à Montardon pour partager des moments conviviaux autour de nos jeux préférés. Que vous soyez amateur de stratégie, fan de jeux d'ambiance ou simplement curieux de découvrir de nouveaux univers ludiques, vous êtes les bienvenus !
+          Bienvenue ! Chaque mois (hors vacances scolaires), nous nous retrouvons à la salle du Laaps'Art à Montardon pour partager des moments conviviaux autour de nos jeux préférés 🎲. Que vous soyez amateur de stratégie, fan de jeux d'ambiance ou simplement curieux de découvrir de nouveaux univers ludiques, vous êtes les bienvenus !
         </p>
         <p class="my-2">
-          Nos soirées durent environ 3 heures, rythmées par diverses parties adaptées à tous les niveaux. L'ambiance est chaleureuse et nous faisons en sorte que chacun trouve sa place, des plus jeunes aux plus expérimentés. Et pour clôturer la soirée en beauté, une partie de
-          <a href="https://loupgarou.fandom.com/fr/wiki/Wiki_Loup-Garou">Loup-Garou</a>
+          Nos soirées se déroulent de <strong>20h30 à 23h00</strong>, rythmées par diverses parties adaptées à tous les niveaux. L'ambiance est chaleureuse et nous faisons en sorte que chacun trouve sa place, des plus jeunes aux plus expérimentés. Et pour clôturer la soirée en beauté, une partie de
+          <a target="_blank" href="https://loupgarou.fandom.com/fr/wiki/Wiki_Loup-Garou">
+            Loups-Garous de Thiercelieux
+          </a>
           rassemble souvent tout le monde dans une atmosphère pleine de suspense et de fous rires !
         </p>
         <p class="my-2">
-          <strong>Pratique :</strong>
-          Entrée libre et gratuite, accessible dès 7 ans. N'hésitez pas à venir seul(e), entre amis ou en famille - l'essentiel est de partager un bon moment ensemble !
+          Pour adultes, ados, enfants <span class="underline">à partir de 6 ans</span>
+          [<a class="text-xs" href="#mineurs">1</a>].
+        </p>
+        <p class="my-2">
+          N'hésitez pas à venir seul(e), entre amis ou en famille - l'essentiel est de partager un bon moment ensemble 🎉 ! C'est
+          <strong>gratuit</strong>
+          pour tout le monde [<a
+            class="text-xs"
+            href="#places"
+          >2</a>].
         </p>
 
         <p class="my-2">
@@ -87,6 +112,18 @@ defmodule LaapsWeb.HomeLive do
           </a>
         </p>
 
+        <p class="my-2">
+          Une question ?
+          <a href="mailto:soireejeuxmontardon@gmail.com">soireejeuxmontardon@gmail.com</a>
+        </p>
+
+        <p class="italic text-xs" id="mineurs">
+          [1] Les mineurs doivent être accompagnés d'un adulte.
+        </p>
+        <p class="italic text-xs" id="places">
+          [2] Places limitées.
+        </p>
+
         <div class="card bg-base-100 w-96 shadow-sm m-auto">
           <figure>
             <img
@@ -95,7 +132,7 @@ defmodule LaapsWeb.HomeLive do
             />
           </figure>
           <div class="card-body">
-            <h2 class="card-title">Laaps'art / Micro-Folie</h2>
+            <h2 class="card-title">Laaps'Art / Micro-Folie</h2>
             <p>2 chemin Penouilh, 64121 Montardon</p>
 
             <div class="card-actions justify-end">
@@ -112,6 +149,26 @@ defmodule LaapsWeb.HomeLive do
       </div>
     </Layouts.app>
     """
+  end
+
+  def mount(_params, _session, socket) do
+    if connected?(socket) do
+      news = Laaps.Game.news()
+
+      {:ok,
+       assign(socket,
+         page_title: "Accueil - Soirée Jeux Montardon",
+         news: news,
+         loading: false
+       )}
+    else
+      {:ok,
+       assign(socket,
+         page_title: "Accueil - Soirée Jeux Montardon",
+         news: [],
+         loading: true
+       )}
+    end
   end
 
   def handle_params(_params, url, socket) do

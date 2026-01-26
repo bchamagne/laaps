@@ -102,6 +102,7 @@ defmodule LaapsWeb.SettingsLive do
   def mount(_params, _session, socket) do
     {:ok,
      assign(socket,
+       page_title: "Paramètres - Soirée Jeux Montardon",
        settings_form: to_form(settings_changeset(), as: :settings)
      )}
   end

@@ -39,7 +39,7 @@ defmodule LaapsWeb.Layouts do
     <header class="bg-white dark:bg-gray-800 shadow">
       <div class="max-w-4xl mx-auto px-4 py-6">
         <div class="flex">
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Laaps Jeux</h1>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Soirée Jeux Montardon</h1>
           <div class="grow"></div>
 
           <Layouts.theme_toggle />
@@ -162,11 +162,18 @@ defmodule LaapsWeb.Layouts do
     """
   end
 
-  attr :date, DateTime, required: true
+  attr :date, DateTime, required: false
 
   def date(assigns) do
+    format =
+      if Map.has_key?(assigns, :format) do
+        assigns.format
+      else
+        "%d/%m à %H:%M"
+      end
+
     ~H"""
-    {Calendar.strftime(@date, "%d/%m à %H:%M")}
+    {Calendar.strftime(@date, format)}
     """
   end
 
