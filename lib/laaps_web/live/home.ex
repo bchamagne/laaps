@@ -4,7 +4,7 @@ defmodule LaapsWeb.HomeLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} request_path={@request_path}>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4 max-h-40 overflow-scroll">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4 max-h-40 overflow-y-auto">
         <h2 class="text-xl font-bold mb-2">News</h2>
         <%= if @loading do %>
           <div class="text-center"><span class="loading loading-ball loading-xl"></span></div>
@@ -23,11 +23,17 @@ defmodule LaapsWeb.HomeLive do
           <% end %>
         <% end %>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4 text-justify">
         <h2 class="text-xl font-bold pb-2">Qui sommes-nous ?</h2>
         <p class="my-2">
           Bienvenue ! Chaque mois (hors vacances scolaires), nous nous retrouvons à la salle du Laaps'Art à Montardon pour partager des moments conviviaux autour de nos jeux préférés 🎲. Que vous soyez amateur de stratégie, fan de jeux d'ambiance ou simplement curieux de découvrir de nouveaux univers ludiques, vous êtes les bienvenus !
         </p>
+
+        <img class="m-auto rounded-md h-30" src={~p"/images/laaps-art-logo.png"} />
+        <p class="text-xs faded italic text-center">
+          Image 1 : Laaps'Art - Logo mural
+        </p>
+
         <p class="my-2">
           Nos soirées se déroulent de <strong>20h30 à 23h00</strong>, rythmées par diverses parties adaptées à tous les niveaux. L'ambiance est chaleureuse et nous faisons en sorte que chacun trouve sa place, des plus jeunes aux plus expérimentés. Et pour clôturer la soirée en beauté, une partie de
           <a target="_blank" href="https://loupgarou.fandom.com/fr/wiki/Wiki_Loup-Garou">
@@ -35,6 +41,12 @@ defmodule LaapsWeb.HomeLive do
           </a>
           rassemble souvent tout le monde dans une atmosphère pleine de suspense et de fous rires !
         </p>
+
+        <img class="m-auto rounded-md bg-white" src={~p"/images/jeux.png"} />
+        <p class="text-xs faded italic text-center">
+          Image 2 : Jeux de société
+        </p>
+
         <p class="my-2">
           Pour adultes, ados, enfants <span class="underline">à partir de 6 ans</span>
           [<a class="text-xs" href="#mineurs">1</a>].
@@ -124,13 +136,16 @@ defmodule LaapsWeb.HomeLive do
           [2] Places limitées.
         </p>
 
-        <div class="card bg-base-100 w-96 shadow-sm m-auto">
+        <div class="card bg-base-100 w-96 shadow-sm m-auto my-4">
           <figure>
             <img
               src={~p"/images/laaps-art.jpg"}
               alt="Image du bâtiment du Laaps'art"
             />
           </figure>
+          <p class="text-xs faded italic text-center">
+            Image 3 : Bâtiment du Laaps'Art
+          </p>
           <div class="card-body">
             <h2 class="card-title">Laaps'Art / Micro-Folie</h2>
             <p>2 chemin Penouilh, 64121 Montardon</p>
@@ -146,6 +161,23 @@ defmodule LaapsWeb.HomeLive do
             </div>
           </div>
         </div>
+
+        <p class="faded italic text-xs">
+          Source image 1 :
+          <a target="_blank" href="https://www.larepubliquedespyrenees.fr/">
+            https://www.larepubliquedespyrenees.fr/
+          </a>
+        </p>
+        <p class="faded italic text-xs">
+          Source image 2 :
+          <a target="_blank" href="https://www.prunay-le-gillon.fr/">
+            https://www.prunay-le-gillon.fr/
+          </a>
+        </p>
+        <p class="faded italic text-xs">
+          Source image 3 :
+          <a target="_blank" href="https://www.montardon.org/">https://www.montardon.org/</a>
+        </p>
       </div>
     </Layouts.app>
     """
