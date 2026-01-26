@@ -11,4 +11,11 @@ defmodule Laaps.Game do
 
     Repo.all(query)
   end
+
+  def participants(e) do
+    e.participants
+    |> Enum.map(&Event.decode_participant/1)
+    |> Enum.map(&elem(&1, 1))
+    |> Enum.sum()
+  end
 end
