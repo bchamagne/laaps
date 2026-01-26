@@ -8,7 +8,27 @@ defmodule LaapsWeb.SettingsLive do
 
     {%{}, types}
     |> cast(attrs, Map.keys(types))
-    |> validate_number(:count, greater_than: 0)
+    |> validate_required([:firstname, :lastname, :count],
+      message: "Ce champ est obligatoire"
+    )
+    |> validate_length(:firstname,
+      min: 1,
+      max: 100,
+      message: "Le prénom doit contenir entre 1 et 100 caractères"
+    )
+    |> validate_length(:lastname,
+      min: 1,
+      max: 100,
+      message: "Le nom doit contenir entre 1 et 100 caractères"
+    )
+    |> validate_number(:count,
+      greater_than: 0,
+      message: "Le nombre de personnes doit être supérieur à 0"
+    )
+    |> validate_number(:count,
+      less_than_or_equal_to: 10,
+      message: "Le nombre de personnes ne peut pas dépasser 10"
+    )
   end
 
   def render(assigns) do
@@ -20,23 +40,58 @@ defmodule LaapsWeb.SettingsLive do
         <.form
           for={@settings_form}
           id="settings-form"
-          phx-hook="SettingsLocalStorage"
+          phx-hook="LocalStorageForm"
           phx-change="validate_settings"
           phx-submit="save_settings"
+          class="space-y-4"
         >
-          <div class="space-y-4">
-            <.input field={@settings_form[:firstname]} type="text" label="Prénom" />
-            <.input field={@settings_form[:lastname]} type="text" label="Nom" />
-            <.input
-              field={@settings_form[:count]}
-              type="number"
-              label="Nombre de personnes par défaut"
-              min="1"
-            />
+          <.input
+            field={@settings_form[:firstname]}
+            type="text"
+            label="Prénom"
+            placeholder="Votre prénom"
+            class="input input-bordered w-full"
+            required
+          />
+          <.input
+            field={@settings_form[:lastname]}
+            type="text"
+            label="Nom"
+            placeholder="Votre nom"
+            class="input input-bordered w-full"
+            required
+          />
+          <.input
+            field={@settings_form[:count]}
+            type="number"
+            label="Nombre de personnes par défaut"
+            placeholder="1"
+            min="1"
+            max="10"
+            class="input input-bordered w-full"
+            required
+          />
 
-            <div class="flex justify-end space-x-2 mt-6">
-              <button type="submit" class="btn btn-primary">Enregistrer</button>
-            </div>
+          <div class="flex justify-end space-x-2 mt-6">
+            <button
+              type="button"
+              class="btn btn-ghost"
+              phx-click={
+                JS.dispatch("clear:localstorage", to: "#settings-form") |> JS.push("reset_settings")
+              }
+              phx-disable-with="Réinitialisation..."
+              aria-label="Réinitialiser les paramètres"
+            >
+              Réinitialiser
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              phx-disable-with="Enregistrement..."
+              aria-label="Enregistrer les paramètres"
+            >
+              Enregistrer
+            </button>
           </div>
         </.form>
       </div>
@@ -71,5 +126,15 @@ defmodule LaapsWeb.SettingsLive do
     else
       {:noreply, assign(socket, settings_form: to_form(changeset, as: :settings))}
     end
+  end
+
+  def handle_event("reset_settings", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(
+       settings_form:
+         to_form(settings_changeset(%{firstname: "", lastname: "", count: 1}), as: :settings)
+     )
+     |> put_flash(:info, "Paramètres réinitialisés")}
   end
 end

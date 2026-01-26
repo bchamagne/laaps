@@ -27,13 +27,15 @@ import topbar from "../vendor/topbar"
 
 const LocalStorageForm = {
   mounted() {
-    // Load saved form data from localStorage using separate keys
-    const firstnameInput = this.el.querySelector('[name="participant[firstname]"]')
-    const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
-    const countInput = this.el.querySelector('[name="participant[count]"]')
+    console.log('LocalStorageForm mounted on:', this.el.id)
+    // Find input fields by name pattern (supports both participant[field] and settings[field])
+    const firstnameInput = this.el.querySelector('[name*="[firstname]"]')
+    const lastnameInput = this.el.querySelector('[name*="[lastname]"]')
+    const countInput = this.el.querySelector('[name*="[count]"]')
     
     // Load and set firstname
     const savedFirstname = localStorage.getItem('laaps_firstname')
+    console.log('Loaded firstname from localStorage:', savedFirstname)
     if (firstnameInput && savedFirstname) {
       firstnameInput.value = savedFirstname
       firstnameInput.dispatchEvent(new Event('input', { bubbles: true }))
@@ -41,6 +43,7 @@ const LocalStorageForm = {
     
     // Load and set lastname
     const savedLastname = localStorage.getItem('laaps_lastname')
+    console.log('Loaded lastname from localStorage:', savedLastname)
     if (lastnameInput && savedLastname) {
       lastnameInput.value = savedLastname
       lastnameInput.dispatchEvent(new Event('input', { bubbles: true }))
@@ -48,6 +51,7 @@ const LocalStorageForm = {
     
     // Load and set count
     const savedCount = localStorage.getItem('laaps_count')
+    console.log('Loaded count from localStorage:', savedCount)
     if (countInput && savedCount) {
       countInput.value = savedCount
       countInput.dispatchEvent(new Event('input', { bubbles: true }))
@@ -57,79 +61,72 @@ const LocalStorageForm = {
     this.saveFormData = this.saveFormData.bind(this)
     const form = this.el
     form.addEventListener('input', this.saveFormData)
+    
+    // Also save on form submit
+    this.saveOnSubmit = this.saveOnSubmit.bind(this)
+    form.addEventListener('submit', this.saveOnSubmit)
+    
+    // Listen for clear:localstorage events
+    this.handleClearLocalStorage = this.clearLocalStorage.bind(this)
+    form.addEventListener('clear:localstorage', this.handleClearLocalStorage)
   },
   
   destroyed() {
-    // Remove event listener
+    // Remove event listeners
     this.el.removeEventListener('input', this.saveFormData)
+    this.el.removeEventListener('submit', this.saveOnSubmit)
+    this.el.removeEventListener('clear:localstorage', this.handleClearLocalStorage)
     // Save final state
     this.saveFormData()
   },
   
   saveFormData() {
-    const firstnameInput = this.el.querySelector('[name="participant[firstname]"]')
-    const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
-    const countInput = this.el.querySelector('[name="participant[count]"]')
-    
-    // Save each field to separate localStorage keys
-    if (firstnameInput) {
-      localStorage.setItem('laaps_firstname', firstnameInput.value || '')
-    }
-    
-    if (lastnameInput) {
-      localStorage.setItem('laaps_lastname', lastnameInput.value || '')
-    }
-    
-    if (countInput) {
-      localStorage.setItem('laaps_count', countInput.value || '1')
-    }
-  }
-}
+    this.saveToLocalStorage()
+  },
+  
+  saveOnSubmit(e) {
+    // LiveView handles the actual form submission via phx-submit
+    // We just save to localStorage as well
+    this.saveToLocalStorage()
+  },
+  
 
-const SettingsLocalStorage = {
-  mounted() {
-    // Load saved form data from localStorage using separate keys
-    const firstnameInput = this.el.querySelector('[name="settings[firstname]"]')
-    const lastnameInput = this.el.querySelector('[name="settings[lastname]"]')
-    const countInput = this.el.querySelector('[name="settings[count]"]')
+  
+  clearLocalStorage() {
+    console.log('Clearing localStorage...')
+    // Remove localStorage items
+    localStorage.removeItem('laaps_firstname')
+    localStorage.removeItem('laaps_lastname')
+    localStorage.removeItem('laaps_count')
     
-    // Load and set firstname
-    const savedFirstname = localStorage.getItem('laaps_firstname')
-    if (firstnameInput && savedFirstname) {
-      firstnameInput.value = savedFirstname
+    // Clear form inputs
+    const firstnameInput = this.el.querySelector('[name*="[firstname]"]')
+    const lastnameInput = this.el.querySelector('[name*="[lastname]"]')
+    const countInput = this.el.querySelector('[name*="[count]"]')
+    
+    if (firstnameInput) {
+      firstnameInput.value = ''
       firstnameInput.dispatchEvent(new Event('input', { bubbles: true }))
     }
     
-    // Load and set lastname
-    const savedLastname = localStorage.getItem('laaps_lastname')
-    if (lastnameInput && savedLastname) {
-      lastnameInput.value = savedLastname
+    if (lastnameInput) {
+      lastnameInput.value = ''
       lastnameInput.dispatchEvent(new Event('input', { bubbles: true }))
     }
     
-    // Load and set count
-    const savedCount = localStorage.getItem('laaps_count')
-    if (countInput && savedCount) {
-      countInput.value = savedCount
+    if (countInput) {
+      countInput.value = '1'
       countInput.dispatchEvent(new Event('input', { bubbles: true }))
     }
     
-    // Add event listener to save on form submit
-    this.saveSettings = this.saveSettings.bind(this)
-    this.el.addEventListener('submit', this.saveSettings)
+    console.log('LocalStorage cleared and form inputs reset')
   },
   
-  destroyed() {
-    // Remove event listener
-    this.el.removeEventListener('submit', this.saveSettings)
-  },
-  
-  saveSettings(e) {
-    // Prevent default form submission since we're using LiveView
-    // LiveView will handle the phx-submit, we just save to localStorage
-    const firstnameInput = this.el.querySelector('[name="settings[firstname]"]')
-    const lastnameInput = this.el.querySelector('[name="settings[lastname]"]')
-    const countInput = this.el.querySelector('[name="settings[count]"]')
+  saveToLocalStorage() {
+    // Find input fields by name pattern
+    const firstnameInput = this.el.querySelector('[name*="[firstname]"]')
+    const lastnameInput = this.el.querySelector('[name*="[lastname]"]')
+    const countInput = this.el.querySelector('[name*="[count]"]')
     
     // Save each field to separate localStorage keys
     if (firstnameInput) {
@@ -150,7 +147,7 @@ const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {LocalStorageForm, SettingsLocalStorage, ...colocatedHooks},
+  hooks: {LocalStorageForm, ...colocatedHooks},
 })
 
 // Show progress bar on live navigation and form submits
