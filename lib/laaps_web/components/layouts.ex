@@ -163,6 +163,14 @@ defmodule LaapsWeb.Layouts do
     """
   end
 
+  attr :date, DateTime, required: true
+
+  def date(assigns) do
+    ~H"""
+    {Calendar.strftime(@date, "Le %d/%m à %H:%M")}
+    """
+  end
+
   def icon_home(assigns) do
     ~H"""
     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
