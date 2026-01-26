@@ -82,7 +82,14 @@ defmodule LaapsWeb.GameLive do
                     </div>
                     <div>
                       <div>{name}</div>
-                      <div class="text-xs uppercase font-semibold opacity-60">{count} personnes</div>
+                      <div class="text-xs uppercase font-semibold opacity-60">
+                        {count}
+                        <%= if count > 1 do %>
+                          personnes
+                        <% else %>
+                          personne
+                        <% end %>
+                      </div>
                     </div>
                   </li>
                 <% end %>
