@@ -25,11 +25,66 @@ import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/laaps"
 import topbar from "../vendor/topbar"
 
+const LocalStorageForm = {
+  mounted() {
+    // Load saved form data from localStorage
+    const savedData = localStorage.getItem('laaps_participant_form')
+    if (savedData) {
+      try {
+        const data = JSON.parse(savedData)
+        // Set form values
+        const firstnameInput = this.el.querySelector('[name="participant[firstname]"]')
+        const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
+        const countInput = this.el.querySelector('[name="participant[count]"]')
+        
+        if (firstnameInput && data.firstname) firstnameInput.value = data.firstname
+        if (lastnameInput && data.lastname) lastnameInput.value = data.lastname
+        if (countInput && data.count) countInput.value = data.count
+        
+        // Trigger change event to update LiveView state
+        if (firstnameInput && data.firstname) firstnameInput.dispatchEvent(new Event('input', { bubbles: true }))
+        if (lastnameInput && data.lastname) lastnameInput.dispatchEvent(new Event('input', { bubbles: true }))
+        if (countInput && data.count) countInput.dispatchEvent(new Event('input', { bubbles: true }))
+      } catch (e) {
+        console.error('Failed to parse saved form data:', e)
+      }
+    }
+    
+    // Add event listeners to save on input changes
+    this.saveFormData = this.saveFormData.bind(this)
+    const form = this.el
+    form.addEventListener('input', this.saveFormData)
+  },
+  
+  destroyed() {
+    // Remove event listener
+    this.el.removeEventListener('input', this.saveFormData)
+    // Save final state
+    this.saveFormData()
+  },
+  
+  saveFormData() {
+    const firstnameInput = this.el.querySelector('[name="participant[firstname]"]')
+    const lastnameInput = this.el.querySelector('[name="participant[lastname]"]')
+    const countInput = this.el.querySelector('[name="participant[count]"]')
+    
+    if (firstnameInput && lastnameInput && countInput) {
+      const formData = {
+        firstname: firstnameInput.value || '',
+        lastname: lastnameInput.value || '',
+        count: countInput.value || '1'
+      }
+      
+      localStorage.setItem('laaps_participant_form', JSON.stringify(formData))
+    }
+  }
+}
+
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks},
+  hooks: {LocalStorageForm, ...colocatedHooks},
 })
 
 // Show progress bar on live navigation and form submits
