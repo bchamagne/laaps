@@ -49,25 +49,10 @@
     </main>
 
     <footer class="dock">
-      <button class="dock-active">
-        <Layouts.icon_home />
-        <span class="dock-label">Accueil</span>
-      </button>
-
-      <button>
-        <Layouts.icon_game />
-        <span class="dock-label">Soirées</span>
-      </button>
-
-      <button>
-        <Layouts.icon_chat />
-        <span class="dock-label">Chat</span>
-      </button>
-
-      <button>
-        <Layouts.icon_settings />
-        <span class="dock-label">Paramètres</span>
-      </button>
+      <Layouts.dock_button label="Accueil" path="/" icon="home" req_path={@conn.request_path} />
+      <Layouts.dock_button label="Soirées" path="/game" icon="game" req_path={@conn.request_path} />
+      <Layouts.dock_button label="Chat" path="/chat" icon="chat" req_path={@conn.request_path} />
+      <Layouts.dock_button label="Paramètres" path="/settings" icon="settings" req_path={@conn.request_path} />
     </footer>
   </body>
 </html>

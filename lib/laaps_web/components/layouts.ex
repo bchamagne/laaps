@@ -142,6 +142,32 @@ defmodule LaapsWeb.Layouts do
     """
   end
 
+  def dock_button(assigns) do
+    active_class =
+      if assigns.req_path == assigns.path do
+        "dock-active"
+      else
+        ""
+      end
+
+    svg =
+      case assigns.icon do
+        "home" -> icon_home(assigns)
+        "game" -> icon_game(assigns)
+        "chat" -> icon_chat(assigns)
+        "settings" -> icon_settings(assigns)
+      end
+
+    assigns = assign(assigns, active_class: active_class, svg: svg)
+
+    ~H"""
+    <a class={@active_class} href={@path}>
+      {@svg}
+      <span class="dock-label">{@label}</span>
+    </a>
+    """
+  end
+
   def icon_home(assigns) do
     ~H"""
     <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
