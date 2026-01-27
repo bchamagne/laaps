@@ -27,124 +27,48 @@ import topbar from "../vendor/topbar";
 
 const LocalStorageForm = {
   mounted() {
-    console.log("LocalStorageForm mounted on:", this.el.id);
-    // Find input fields by name pattern (supports both participant[field] and settings[field])
-    const firstnameInput = this.el.querySelector('[name*="[firstname]"]');
-    const lastnameInput = this.el.querySelector('[name*="[lastname]"]');
-    const countInput = this.el.querySelector('[name*="[count]"]');
+    this.$firstname = this.el.querySelector('[name*="[firstname]"]');
+    this.$lastname = this.el.querySelector('[name*="[lastname]"]');
+    this.$count = this.el.querySelector('[name*="[count]"]');
 
-    // Load and set firstname
-    const savedFirstname = localStorage.getItem("laaps_firstname");
-    console.log("Loaded firstname from localStorage:", savedFirstname);
-    if (firstnameInput && savedFirstname) {
-      firstnameInput.value = savedFirstname;
-      firstnameInput.dispatchEvent(new Event("input", { bubbles: true }));
-    }
+    if (!this.$firstname || !this.$lastname || !this.$count)
+      throw new Error("Missing some inputs for the hook");
 
-    // Load and set lastname
-    const savedLastname = localStorage.getItem("laaps_lastname");
-    console.log("Loaded lastname from localStorage:", savedLastname);
-    if (lastnameInput && savedLastname) {
-      lastnameInput.value = savedLastname;
-      lastnameInput.dispatchEvent(new Event("input", { bubbles: true }));
-    }
+    this.$firstname.value = localStorage.getItem("laaps_firstname");
+    this.$lastname.value = localStorage.getItem("laaps_lastname");
+    this.$count.value = localStorage.getItem("laaps_count") || 1;
 
-    // Load and set count - default to 1 if not in localStorage
-    const savedCount = localStorage.getItem("laaps_count");
-    console.log("Loaded count from localStorage:", savedCount);
-    if (countInput) {
-      if (savedCount && savedCount !== "") {
-        countInput.value = savedCount;
-      } else {
-        countInput.value = "1";
-      }
-      countInput.dispatchEvent(new Event("input", { bubbles: true }));
-    }
-
-    // Add event listeners to save on input changes
-    this.saveFormData = this.saveFormData.bind(this);
-    const form = this.el;
-    form.addEventListener("input", this.saveFormData);
-
-    // Also save on form submit
-    this.saveOnSubmit = this.saveOnSubmit.bind(this);
-    form.addEventListener("submit", this.saveOnSubmit);
-
-    // Listen for clear:localstorage events
-    this.handleClearLocalStorage = this.clearLocalStorage.bind(this);
-    form.addEventListener("clear:localstorage", this.handleClearLocalStorage);
+    this.el.addEventListener("submit", this.saveToLocalStorage.bind(this));
+    this.el.addEventListener(
+      "clear:localstorage",
+      this.clearLocalStorage.bind(this),
+    );
   },
 
   destroyed() {
-    // Remove event listeners
-    this.el.removeEventListener("input", this.saveFormData);
-    this.el.removeEventListener("submit", this.saveOnSubmit);
+    this.el.removeEventListener("submit", this.saveToLocalStorage.bind(this));
     this.el.removeEventListener(
       "clear:localstorage",
-      this.handleClearLocalStorage,
+      this.clearLocalStorage.bind(this),
     );
-    // Save final state
-    this.saveFormData();
-  },
-
-  saveFormData() {
-    this.saveToLocalStorage();
-  },
-
-  saveOnSubmit(e) {
-    // LiveView handles the actual form submission via phx-submit
-    // We just save to localStorage as well
-    this.saveToLocalStorage();
   },
 
   clearLocalStorage() {
-    console.log("Clearing localStorage...");
-    // Remove localStorage items
     localStorage.removeItem("laaps_firstname");
     localStorage.removeItem("laaps_lastname");
     localStorage.removeItem("laaps_count");
-
-    // Clear form inputs
-    const firstnameInput = this.el.querySelector('[name*="[firstname]"]');
-    const lastnameInput = this.el.querySelector('[name*="[lastname]"]');
-    const countInput = this.el.querySelector('[name*="[count]"]');
-
-    if (firstnameInput) {
-      firstnameInput.value = "";
-      firstnameInput.dispatchEvent(new Event("input", { bubbles: true }));
-    }
-
-    if (lastnameInput) {
-      lastnameInput.value = "";
-      lastnameInput.dispatchEvent(new Event("input", { bubbles: true }));
-    }
-
-    if (countInput) {
-      countInput.value = "1";
-      countInput.dispatchEvent(new Event("input", { bubbles: true }));
-    }
-
-    console.log("LocalStorage cleared and form inputs reset");
   },
 
   saveToLocalStorage() {
-    // Find input fields by name pattern
-    const firstnameInput = this.el.querySelector('[name*="[firstname]"]');
-    const lastnameInput = this.el.querySelector('[name*="[lastname]"]');
-    const countInput = this.el.querySelector('[name*="[count]"]');
+    this.clearLocalStorage();
+    if (this.$firstname.value)
+      localStorage.setItem("laaps_firstname", this.$firstname.value);
 
-    // Save each field to separate localStorage keys
-    if (firstnameInput) {
-      localStorage.setItem("laaps_firstname", firstnameInput.value || "");
-    }
+    if (this.$lastname.value)
+      localStorage.setItem("laaps_lastname", this.$lastname.value);
 
-    if (lastnameInput) {
-      localStorage.setItem("laaps_lastname", lastnameInput.value || "");
-    }
-
-    if (countInput) {
-      localStorage.setItem("laaps_count", countInput.value || "1");
-    }
+    if (this.$count.value)
+      localStorage.setItem("laaps_count", this.$count.value);
   },
 };
 
