@@ -128,7 +128,7 @@ defmodule LaapsWeb.HomeLive do
           [2] Places limitées.
         </p>
 
-        <div class="card bg-base-100 w-96 shadow-sm m-auto my-4">
+        <div class="card bg-base-100 w-96 shadow-sm m-auto my-4 max-w-full">
           <figure>
             <img
               src={~p"/images/laaps-art.jpg"}
