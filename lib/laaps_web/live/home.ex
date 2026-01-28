@@ -4,7 +4,7 @@ defmodule LaapsWeb.HomeLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} request_path={@request_path}>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 my-4 max-h-40 overflow-y-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-4 max-h-40 overflow-y-auto">
         <h2 class="text-xl font-bold mb-2">News</h2>
         <%= if @loading do %>
           <div class="text-center"><span class="loading loading-ball loading-xl"></span></div>
@@ -31,7 +31,10 @@ defmodule LaapsWeb.HomeLive do
 
         <img class="m-auto rounded-md h-30" src={~p"/images/laaps-art-logo.png"} />
         <p class="text-xs faded italic text-center">
-          Image 1 : Laaps'Art - Logo mural
+          Image 1 : Laaps'Art - Logo mural (<a
+            target="_blank"
+            href="https://www.larepubliquedespyrenees.fr/"
+          >source</a>)
         </p>
 
         <p class="my-2">
@@ -44,7 +47,7 @@ defmodule LaapsWeb.HomeLive do
 
         <img class="m-auto rounded-md bg-white" src={~p"/images/jeux.png"} />
         <p class="text-xs faded italic text-center">
-          Image 2 : Jeux de société
+          Image 2 : Jeux de société (<a target="_blank" href="https://www.prunay-le-gillon.fr/">source</a>)
         </p>
 
         <p class="my-2">
@@ -116,8 +119,8 @@ defmodule LaapsWeb.HomeLive do
           </.link>
         </p>
 
-        <p class="my-2">
-          Une question ?
+        <p class="my-2 text-center">
+          Une question ?<br />
           <a href="mailto:soireejeuxmontardon@gmail.com">soireejeuxmontardon@gmail.com</a>
         </p>
 
@@ -136,7 +139,7 @@ defmodule LaapsWeb.HomeLive do
             />
           </figure>
           <p class="text-xs faded italic text-center">
-            Image 3 : Bâtiment du Laaps'Art
+            Image 3 : Bâtiment du Laaps'Art (<a target="_blank" href="https://www.montardon.org/">source</a>)
           </p>
           <div class="card-body">
             <h2 class="card-title">Laaps'Art / Micro-Folie</h2>
@@ -148,28 +151,11 @@ defmodule LaapsWeb.HomeLive do
                 target="_blank"
                 href="https://maps.app.goo.gl/HQUYzmbUWaF96dAa8"
               >
-                Ouvrir sur Google Maps
+                Ouvrir sur Maps
               </a>
             </div>
           </div>
         </div>
-
-        <p class="faded italic text-xs">
-          Source image 1 :
-          <a target="_blank" href="https://www.larepubliquedespyrenees.fr/">
-            https://www.larepubliquedespyrenees.fr/
-          </a>
-        </p>
-        <p class="faded italic text-xs">
-          Source image 2 :
-          <a target="_blank" href="https://www.prunay-le-gillon.fr/">
-            https://www.prunay-le-gillon.fr/
-          </a>
-        </p>
-        <p class="faded italic text-xs">
-          Source image 3 :
-          <a target="_blank" href="https://www.montardon.org/">https://www.montardon.org/</a>
-        </p>
       </div>
     </Layouts.app>
     """

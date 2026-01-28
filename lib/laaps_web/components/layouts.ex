@@ -39,7 +39,9 @@ defmodule LaapsWeb.Layouts do
     <header class="bg-white dark:bg-gray-800 shadow">
       <div class="max-w-4xl mx-auto px-4 py-6">
         <div class="flex">
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Soirée Jeux Montardon</h1>
+          <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+            Soirée Jeux Montardon
+          </h1>
           <div class="grow"></div>
 
           <Layouts.theme_toggle />
