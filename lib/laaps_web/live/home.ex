@@ -62,10 +62,8 @@ defmodule LaapsWeb.HomeLive do
 
         <p class="my-2">
           Pour voir les prochains dates et vous inscrire, rien de plus simple, cliquez sur l'onglet :
-          <a data-phx-loc="159" class="" href="/game" data-phx-id="m6-phx-GI5cHWYt_FYwv6qD">
-            <!-- <LaapsWeb.Layouts.icon_game> lib/laaps_web/components/layouts.ex:213 (laaps) -->
+          <.link navigate={~p"/game"}>
             <svg
-              data-phx-loc="214"
               class="size-[1.2em] inline text-[40px] font-white"
               version="1.1"
               id="_x32_"
@@ -73,14 +71,12 @@ defmodule LaapsWeb.HomeLive do
               xmlns:xlink="http://www.w3.org/1999/xlink"
               viewBox="0 0 512 512"
               xml:space="preserve"
-              data-phx-id="m7-phx-GI5cHWYt_FYwv6qD"
             >
-              <style data-phx-loc="223" type="text/css">
+              <style type="text/css">
                 .st0{fill:currentColor;}
               </style>
-              <g data-phx-loc="226">
+              <g>
                 <path
-                  data-phx-loc="227"
                   class="st0"
                   d="M392.292,0H119.707C95.28,0,75.506,19.791,75.506,44.202v423.597c0,24.41,19.775,44.193,44.202,44.202h272.585
           c24.419-0.008,44.194-19.783,44.202-44.202V44.202C436.486,19.783,416.711,0.008,392.292,0z M392.292,490.311H119.707
@@ -89,7 +85,6 @@ defmodule LaapsWeb.HomeLive do
                 >
                 </path>
                 <path
-                  data-phx-loc="234"
                   class="st0"
                   d="M293.532,231.202c-2.159,0-4.269,0.179-6.339,0.514c5.035-6.584,8.034-14.813,8.034-23.735
           c0-21.616-17.6-39.216-39.223-39.216c-21.624,0-39.224,17.6-39.224,39.216c0,8.922,2.999,17.151,8.034,23.735
@@ -99,7 +94,6 @@ defmodule LaapsWeb.HomeLive do
                 >
                 </path>
                 <path
-                  data-phx-loc="242"
                   class="st0"
                   d="M374.188,421.25c-0.928,0-1.833,0.073-2.713,0.211c2.151-2.827,3.455-6.371,3.455-10.217
           c0-9.296-7.578-16.882-16.883-16.882c-9.321,0-16.89,7.586-16.89,16.882c0,3.846,1.296,7.39,3.455,10.217
@@ -109,7 +103,6 @@ defmodule LaapsWeb.HomeLive do
                 >
                 </path>
                 <path
-                  data-phx-loc="250"
                   class="st0"
                   d="M187.008,96.429c0-9.304-7.578-16.874-16.89-16.874c-0.92,0-1.833,0.072-2.722,0.211
           c2.168-2.827,3.447-6.371,3.447-10.218c0-9.296-7.561-16.882-16.866-16.882c-9.321,0-16.898,7.586-16.898,16.882
@@ -120,8 +113,7 @@ defmodule LaapsWeb.HomeLive do
                 </path>
               </g>
             </svg>
-            <!-- </LaapsWeb.Layouts.icon_game> -->
-          </a>
+          </.link>
         </p>
 
         <p class="my-2">

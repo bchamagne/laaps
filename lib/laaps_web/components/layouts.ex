@@ -52,11 +52,11 @@ defmodule LaapsWeb.Layouts do
     </main>
 
     <footer class="dock">
-      <Layouts.dock_button label="Accueil" path="/" icon="home" request_path={@request_path} />
-      <Layouts.dock_button label="Soirées" path="/game" icon="game" request_path={@request_path} />
-      <Layouts.dock_button
+      <.dock_button label="Accueil" path={~p"/"} icon="home" request_path={@request_path} />
+      <.dock_button label="Soirées" path={~p"/game"} icon="game" request_path={@request_path} />
+      <.dock_button
         label="Paramètres"
-        path="/settings"
+        path={~p"/settings"}
         icon="settings"
         request_path={@request_path}
       />
@@ -155,10 +155,10 @@ defmodule LaapsWeb.Layouts do
     assigns = assign(assigns, active_class: active_class, svg: svg)
 
     ~H"""
-    <a class={@active_class} href={@path}>
+    <.link class={@active_class} navigate={@path}>
       {@svg}
       <span class="dock-label">{@label}</span>
-    </a>
+    </.link>
     """
   end
 
