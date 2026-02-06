@@ -15,6 +15,11 @@ alias Laaps.Game.Event
 alias Laaps.Game.News
 
 Repo.insert!(%Event{
+  date: ~N[2026-02-06 20:30:00],
+  label: "Soirée Jeux"
+})
+
+Repo.insert!(%Event{
   date: ~N[2026-03-06 20:30:00],
   label: "Soirée Jeux"
 })

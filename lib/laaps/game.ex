@@ -13,7 +13,7 @@ defmodule Laaps.Game do
   def future_events() do
     utc_now = DateTime.utc_now()
 
-    query = from e in Event, where: e.date > ^utc_now
+    query = from e in Event, where: e.date > ^utc_now, order_by: e.date
 
     Repo.all(query)
   end

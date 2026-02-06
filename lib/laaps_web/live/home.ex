@@ -29,13 +29,7 @@ defmodule LaapsWeb.HomeLive do
           Bienvenue ! Chaque mois (hors vacances scolaires), nous nous retrouvons à la salle du Laaps'Art à Montardon pour partager des moments conviviaux autour de nos jeux préférés 🎲. Que vous soyez amateur de stratégie, fan de jeux d'ambiance ou simplement curieux de découvrir de nouveaux univers ludiques, vous êtes les bienvenus !
         </p>
 
-        <img class="m-auto rounded-md h-30" src={~p"/images/laaps-art-logo.png"} />
-        <p class="text-xs faded italic text-center">
-          Image 1 : Laaps'Art - Logo mural (<a
-            target="_blank"
-            href="https://www.larepubliquedespyrenees.fr/"
-          >source</a>)
-        </p>
+        <img class="m-auto rounded-md h-30 my-4" src={~p"/images/laaps-art-logo.png"} />
 
         <p class="my-2">
           Nos soirées se déroulent de <strong>20h30 à 23h00</strong>, rythmées par diverses parties adaptées à tous les niveaux. L'ambiance est chaleureuse et nous faisons en sorte que chacun trouve sa place, des plus jeunes aux plus expérimentés. Et pour clôturer la soirée en beauté, une partie de
@@ -45,22 +39,15 @@ defmodule LaapsWeb.HomeLive do
           rassemble souvent tout le monde dans une atmosphère pleine de suspense et de fous rires !
         </p>
 
-        <img class="m-auto rounded-md bg-white" src={~p"/images/jeux.png"} />
-        <p class="text-xs faded italic text-center">
-          Image 2 : Jeux de société (<a target="_blank" href="https://www.prunay-le-gillon.fr/">source</a>)
-        </p>
+        <img class="m-auto rounded-md bg-white my-4" src={~p"/images/jeux.png"} />
 
         <p class="my-2">
-          Pour adultes, ados, enfants <span class="underline">à partir de 6 ans</span>
-          [<a class="text-xs" href="#mineurs">1</a>].
+          Pour adultes, ados, enfants <span class="underline">à partir de 6 ans</span>. Les mineurs doivent être accompagnés d'un adulte. Les soirées sont limitées à une trentaine de personnes.
         </p>
         <p class="my-2">
           N'hésitez pas à venir seul(e), entre amis ou en famille - l'essentiel est de partager un bon moment ensemble 🎉 ! C'est
           <strong>gratuit</strong>
-          pour tout le monde [<a
-            class="text-xs"
-            href="#places"
-          >2</a>].
+          pour tout le monde.
         </p>
 
         <p class="my-2">
@@ -124,13 +111,6 @@ defmodule LaapsWeb.HomeLive do
           <a href="mailto:soireejeuxmontardon@gmail.com">soireejeuxmontardon@gmail.com</a>
         </p>
 
-        <p class="italic text-xs" id="mineurs">
-          [1] Les mineurs doivent être accompagnés d'un adulte.
-        </p>
-        <p class="italic text-xs" id="places">
-          [2] Places limitées.
-        </p>
-
         <div class="card bg-base-100 w-96 shadow-sm m-auto my-4 max-w-full">
           <figure>
             <img
@@ -138,9 +118,7 @@ defmodule LaapsWeb.HomeLive do
               alt="Image du bâtiment du Laaps'art"
             />
           </figure>
-          <p class="text-xs faded italic text-center">
-            Image 3 : Bâtiment du Laaps'Art (<a target="_blank" href="https://www.montardon.org/">source</a>)
-          </p>
+
           <div class="card-body">
             <h2 class="card-title">Laaps'Art / Micro-Folie</h2>
             <p>2 chemin Penouilh, 64121 Montardon</p>

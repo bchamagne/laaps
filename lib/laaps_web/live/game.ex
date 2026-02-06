@@ -43,19 +43,37 @@ defmodule LaapsWeb.GameLive do
           <% end %>
           <%= for e <- @events do %>
             <% total = Laaps.Game.participants(e) %>
+            <% inscription_opened = NaiveDateTime.diff(e.date, NaiveDateTime.utc_now(), :day) < 3 %>
             <div class="mb-4">
               <div class="flex mb-4">
                 <h2 class="font-bold text-xl"><Layouts.date date={e.date} /> {e.label}</h2>
                 <div class="grow"></div>
 
-                <button
-                  class="btn btn-primary"
-                  phx-click="open_modal"
-                  phx-value-event_id={e.id}
-                  aria-label="S'inscrire à cet événement"
+                <div
+                  class="tooltip"
+                  data-tip={
+                    if not inscription_opened do
+                      "Les inscriptions ouvrent 3 jours avant la date"
+                    else
+                      ""
+                    end
+                  }
                 >
-                  Inscription
-                </button>
+                  <button
+                    class={
+                      if inscription_opened do
+                        "btn btn-primary"
+                      else
+                        "btn btn-disabled"
+                      end
+                    }
+                    phx-click="open_modal"
+                    phx-value-event_id={e.id}
+                    aria-label="S'inscrire à cet événement"
+                  >
+                    Inscription
+                  </button>
+                </div>
               </div>
 
               <p class="my-4">
