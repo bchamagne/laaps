@@ -43,7 +43,7 @@ defmodule LaapsWeb.GameLive do
           <% end %>
           <%= for e <- @events do %>
             <% total = Laaps.Game.participants(e) %>
-            <% inscription_opened = NaiveDateTime.diff(e.date, NaiveDateTime.utc_now(), :day) < 3 %>
+            <% inscription_opened = NaiveDateTime.diff(e.date, NaiveDateTime.utc_now(), :day) < 5 %>
             <div class="mb-4">
               <div class="flex mb-4">
                 <h2 class="font-bold text-xl"><Layouts.date date={e.date} /> {e.label}</h2>
@@ -53,7 +53,7 @@ defmodule LaapsWeb.GameLive do
                   class="tooltip"
                   data-tip={
                     if not inscription_opened do
-                      "Les inscriptions ouvrent 3 jours avant la date"
+                      "Les inscriptions ouvrent 5 jours avant la date"
                     else
                       ""
                     end
